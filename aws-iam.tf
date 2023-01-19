@@ -1,6 +1,6 @@
 resource "aws_iam_user" "demotf" {
   name = "ansible"
-  path = "/system/"
+  #path = "/system/"
 
   tags = {
     createdby = "terraform"
