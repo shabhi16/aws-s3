@@ -1,3 +1,4 @@
+/*
 resource "aws_iam_user" "demotf" {
   name = "ansible"
   #path = "/system/"
