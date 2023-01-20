@@ -1,9 +1,12 @@
 name: 'Terraform Apply'
 
+
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
+  workflow_run:
+    workflows: ['Terraform']
+    branches: [main]
+    types: 
+      - completed
 
 permissions:
   contents: read
