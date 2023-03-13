@@ -1,0 +1,40 @@
+---
+- name: Bootstrap Application
+  hosts: all
+  become: yes
+
+  vars:
+    app_name: myapp
+    app_version: 1.0.0
+    app_package_url: https://example.com/myapp-{{ app_version }}.tar.gz
+    app_install_dir: /opt/{{ app_name }}
+    app_service_name: {{ app_name }}-service
+
+  tasks:
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - tar
+        state: present
+
+    - name: Download and extract application package
+      unarchive:
+        src: "{{ app_package_url }}"
+        dest: "{{ app_install_dir }}"
+        remote_src: yes
+        creates: "{{ app_install_dir }}/{{ app_name }}-{{ app_version }}"
+
+    - name: Create symlink to application directory
+      file:
+        src: "{{ app_install_dir }}/{{ app_name }}-{{ app_version }}"
+        dest: "{{ app_install_dir }}/current"
+        state: link
+
+    - name: Create application service
+      systemd:
+        name: "{{ app_service_name }}"
+        enabled: yes
+        state: started
+        daemon_reload: yes
+        exec_start: "{{ app_install_dir }}/current/start.sh"
